@@ -3,7 +3,7 @@ import {Input} from "../../components/Input";
 import {Button} from "../../components/Button";
 import {Background, Container, Form} from "./styles.js";
 
-export function SignUp() {
+export function Profile() {
     return(
         <Container>
             <Background />
