@@ -18,7 +18,6 @@ function AuthProvider({children}) {
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
 
-
       setData({user, token});
     } catch (error) {
       if (error.response) {
@@ -36,25 +35,50 @@ function AuthProvider({children}) {
     setData({});
   }
 
-useEffect(() => {
-  const token = localStorage.getItem("@rocketnotes-Thorvi:token");
-  const user = localStorage.getItem("@rocketnotes-Thorvi:user");
+  async function updateProfile({user, avatarFile}) {
+    try {
 
-  if (token && user) {
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      if (avatarFile) {
+        const fileUploadForm = new FormData();
+        fileUploadForm.append("avatar", avatarFile);
 
-    setData({
-      token,
-      user: JSON.parse(user)
-    });
+        const response = await api.patch("/users/avatar", fileUploadForm);
+        user.avatar = response.data.avatar;
+      }
+
+      await api.put("/users", user);
+      localStorage.setItem("@rocketnotes-Thorvi:user", JSON.stringify(user));
+      setData({user, token: data.token});
+      alert("Perfil atualizado com sucesso");
+    } catch (error) {
+      if (error.response) {
+        alert(error.response.data.message);
+      } else {
+        alert("Não foi possível atualizar o seu perfil.");
+      }
+    }
   }
 
-}, []);
+  useEffect(() => {
+    const token = localStorage.getItem("@rocketnotes-Thorvi:token");
+    const user = localStorage.getItem("@rocketnotes-Thorvi:user");
+
+    if (token && user) {
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+      setData({
+        token,
+        user: JSON.parse(user)
+      });
+    }
+
+  }, []);
 
   return (
     <AuthContext.Provider value={{
       signIn,
       signOut,
+      updateProfile,
       user: data.user
     }}>
       {children}

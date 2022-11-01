@@ -38,7 +38,7 @@ export function Home() {
                         title: 'React',
                         tags: [
                             {id: '1', name: 'react'},
-                            {id: '1', name: 'thorvi'},
+                            // {id: '1', name: 'thorvi'},
                         ]
                     }}/>
                 </Section>
