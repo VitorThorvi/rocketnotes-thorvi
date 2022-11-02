@@ -29,14 +29,15 @@ export function Profile() {
 
 
   async function handleUpdate() {
-    const user = {
+    const userData = {
       name,
       email,
+      avatar: user.avatar,
       old_password: oldPassword,
       password: newPassword
     }
 
-    await updateProfile({user, avatarFile});
+    await updateProfile({user: userData, avatarFile});
   }
 
   function handleAvatarChange(event) {
