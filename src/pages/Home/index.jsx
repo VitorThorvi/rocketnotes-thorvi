@@ -7,6 +7,7 @@ import {Note} from "../../components/Note/index.jsx";
 import {ButtonText} from "../../components/ButtonText";
 import {useEffect, useState} from "react";
 import {api} from "../../../services/api.js";
+import {useNavigate} from "react-router-dom";
 
 export function Home() {
 
@@ -18,7 +19,13 @@ export function Home() {
 
   const [tags, setTags] = useState([]);
 
+  const navigate = useNavigate();
+
   function handleSelectedTags(tagName) {
+    if (tagName === "all") {
+      return setSelectedTags([]);
+    }
+
     const alreadySelected = selectedTags.includes(tagName);
     if (alreadySelected) {
       const filteredTags = selectedTags.filter(tag => tag !== tagName);
@@ -26,6 +33,10 @@ export function Home() {
     } else {
       setSelectedTags(prevState => [...prevState, tagName]);
     }
+  }
+
+  function handleDetails(id) {
+    navigate(`/details/${id}`)
   }
 
   useEffect(() => {
@@ -81,7 +92,7 @@ export function Home() {
         <Input
           placeholder="Pesquisar pelo título"
           icon={FiSearch}
-          onChange={() => setSearch(e.target.value)}
+          onChange={(e) => setSearch(e.target.value)}
         />
       </Search>
 
@@ -92,6 +103,7 @@ export function Home() {
               <Note
                 key={String(note.id)}
                 data={note}
+                onClick={() => handleDetails(note.id)}
               />
             ))
           }

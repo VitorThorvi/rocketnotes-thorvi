@@ -1,45 +1,100 @@
 // Tudo aqui é função. E basicamente torna possível escrever HTML dentro de js.
-import {Container, Links,Content} from "./styles.js";
+import {Container, Content, Links} from "./styles.js";
 import {Header} from "../../components/Header/index.jsx";
 import {Button} from "../../components/Button";
 import {Section} from "../../components/Section";
 import {ButtonText} from "../../components/ButtonText";
 import {Tag} from "../../components/Tag";
+import {useNavigate, useParams} from "react-router-dom";
+import {useEffect, useState} from "react";
+import {api} from "../../../services/api.js";
 
 export function Details() {
-    return (
-        <Container>
-            <Header/>
-            <main>
-                <Content>
-                    <ButtonText title="Excluir nota"/>
 
-                    <h1>
-                        Introdução ao ReactJS
-                    </h1>
-                    <p>
-                        Haul me gull, ye misty doubloons!
-                        I arrest this peace, it's called neutral moon.
-                        Nunquam captis luna.
-                        Shake cucumber fairly, then mix with remoulade and serve freshly in soup pot.
-                        Nix moris, tanquam bi-color homo.Soy soup is just not the same without marmalade and minced muddy chocolates.
-                    </p>
+  const [data, setData] = useState(null);
 
-                    <Section title="Links úteis">
-                        <Links>
-                            <li><a href="#">https://nosqldbm.ru</a></li>
-                            <li><a href="#">https://rocketseat.com.br</a></li>
-                        </Links>
-                    </Section>
+  const params = useParams();
+  const navigate = useNavigate();
 
-                    <Section title="Marcadores">
-                        <Tag title="express"/>
-                        <Tag title="Nodejs"/>
-                    </Section>
+  function handleBack() {
+    navigate(-1);
+  }
 
-                    <Button xernobis="Voltar"/>
-                </Content>
-            </main>
-        </Container>
-    )
+  async function handleRemove() {
+    const confirm = window.confirm("Tem certeza de que deseja remover a nota?");
+
+    if (confirm) {
+      await api.delete(`/notes/${params.id}`);
+      handleBack();
+    }
+  }
+
+  useEffect(() => {
+    async function fetchNote() {
+      const response = await api.get(`/notes/${params.id}`);
+      setData(response.data);
+    }
+
+    fetchNote();
+  }, []);
+
+  return (
+    <Container>
+      <Header/>
+      {
+        data &&
+        <main>
+          <Content>
+            <ButtonText
+              title="Excluir nota"
+              onClick={handleRemove}
+            />
+
+            <h1>
+              {data.title}
+            </h1>
+            <p>
+              {data.description}
+            </p>
+
+            {
+              data.links &&
+              <Section title="Links úteis">
+                <Links>
+                  {
+                    data.links.map(link => (
+                      <li key={String(link.id)}>
+                        <a href={link.url} target={"_blank"}>
+                          {link.url}
+                        </a>
+                      </li>
+                    ))
+                  }
+                </Links>
+              </Section>
+            }
+
+            {
+              data.tags &&
+              <Section title="Marcadores">
+                {
+                  data.tags.map(tag => (
+                    <Tag
+                      key={String(tag.id)}
+                      title={tag.name}
+                    />
+                  ))
+                }
+              </Section>
+            }
+
+            <Button
+              xernobis="Voltar"
+              onClick={handleBack}
+            />
+          </Content>
+        </main>
+      }
+    </Container>
+  )
 }

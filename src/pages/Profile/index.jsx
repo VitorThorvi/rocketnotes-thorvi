@@ -27,7 +27,6 @@ export function Profile() {
   const [avatarFile, setAvatarFile] = useState("");
 
 
-
   async function handleUpdate() {
     const userData = {
       name,

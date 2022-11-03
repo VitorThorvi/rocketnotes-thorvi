@@ -49,7 +49,7 @@ export function New() {
       return alert("Atenção, existe uma tag não adicionada. Deixe o campo em branco se deseja continuar.");
     }
 
-    if(!title) {
+    if (!title) {
       return alert("Adicione um título à nota.");
     }
 
@@ -60,7 +60,7 @@ export function New() {
       links
     });
     alert("Nota criada com sucesso.");
-    navigate("/");
+    navigate(-1);
   }
 
   return (

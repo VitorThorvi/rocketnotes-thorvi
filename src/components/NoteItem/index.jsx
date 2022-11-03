@@ -17,7 +17,7 @@ export function NoteItem({isNew, value, onClick, ...rest}) {
         onClick={onClick}
         className={isNew ? 'button-add' : 'button-delete'}
       >
-        {isNew ? <FiPlus /> : <FiX />}
+        {isNew ? <FiPlus/> : <FiX/>}
       </button>
     </Container>
   );
